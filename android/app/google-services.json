@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "326836314760",
+    "project_id": "flutterproject-5a176",
+    "storage_bucket": "flutterproject-5a176.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:326836314760:android:a241d64310be9e5246753d",
+        "android_client_info": {
+          "package_name": "com.example.soda_diop_l3gl_examen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAb4_TgrWZikvv9aaBXOjwWm9znpDDadaU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
