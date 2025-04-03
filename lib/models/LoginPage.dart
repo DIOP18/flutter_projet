@@ -43,7 +43,7 @@ class _LoginPageState extends State<LoginPage> {
 
                 const Icon(Icons.business_center, size: 90, color: Color(0xFF2C3E50)),
                 const SizedBox(height: 20),
-                Text("SUNU PROJET",
+                Text("SAMA PROJET",
                   style: GoogleFonts.bebasNeue(
                     fontSize: 52,
                   ),
