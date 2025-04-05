@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 import 'FichiersTab.dart';
+import 'membres.dart';
 
 class ProjectDetailsScreen extends StatefulWidget {
   final String projectId;
@@ -228,8 +229,8 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen>
 
               // Placeholders pour les autres onglets
               Center(child: Text("Tâches - À implémenter")),
-              Center(child: Text("Membres - À implémenter")),
-              ProjectFilesTab(projectId: widget.projectId),
+              ProjectMembersTab(projectId: widget.projectId),
+              ProjectFilesTab(projectId: widget.projectId)
             ],
           );
         },
