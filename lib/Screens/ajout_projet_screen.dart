@@ -1,7 +1,10 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+
+
 
 class AjoutProjetScreen extends StatefulWidget {
   @override
@@ -19,20 +22,36 @@ class _AjoutProjetScreenState extends State<AjoutProjetScreen> {
   DateTime? _endDate;
   String _priority = "Moyenne";
 
-  Future<void> _ajouterProjet() async {
-    if (_formKey.currentState!.validate()) {
-      await FirebaseFirestore.instance.collection('projects').add({
-        'title': _titleController.text,
-        'description': _descriptionController.text,
-        'startDate': _startDate,
-        'endDate': _endDate,
-        'priority': _priority,
-        'status': 'En attente',
-        'progress': 0,
-      });
-   //retour a la page précédente
-      Navigator.pop(context);
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> createProject({
+    required String title,
+    required String description,
+    required String priority,
+    required DateTime? startDate,
+    required DateTime? endDate,
+  }) async {
+    if (!_formKey.currentState!.validate()) return;
+    if (startDate == null || endDate == null) {
+      throw Exception('Les dates sont obligatoires');
     }
+
+    final currentUser = _auth.currentUser;
+    if (currentUser == null) throw Exception('Utilisateur non connecté');
+
+    await _firestore.collection('projects').add({
+      'title': title,
+      'description': description,
+      'priority': priority,
+      'startDate': startDate,
+      'endDate': endDate,
+      'status': 'En attente',
+      'progress': 0,
+      'creator': currentUser.uid,
+      'members': [currentUser.uid],
+      'createdAt': FieldValue.serverTimestamp(),
+    });
   }
 
   @override
@@ -186,7 +205,27 @@ class _AjoutProjetScreenState extends State<AjoutProjetScreen> {
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      onPressed: _ajouterProjet,
+                      onPressed: () async {
+                        if (_formKey.currentState!.validate()) {
+                          try {
+                            await createProject(
+                              title: _titleController.text,
+                              description: _descriptionController.text,
+                              priority: _priority, // Utilisez _priority au lieu de _selectedPriority
+                              startDate: _startDate,
+                              endDate: _endDate,
+                            );
+                            Navigator.pop(context);
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Projet créé avec succès')),
+                            );
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('Erreur: ${e.toString()}')),
+                            );
+                          }
+                        }
+                      },
                       child: Text(
                         "Creer le Projet",
                         style: TextStyle(

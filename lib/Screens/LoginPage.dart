@@ -171,14 +171,15 @@ class _LoginPageState extends State<LoginPage> {
                                 setState(() => _secharge = true);
                                 try {
                                   if (_login) {
-                                    await Auth().LoginWithEmailAndPassword(
+                                    await Auth().loginWithEmailAndPassword(
                                       _emailController.text,
                                       _passwordController.text,
                                     );
                                   } else {
                                     await Auth().createUserWithEmailAndPassword(
-                                      _emailController.text,
-                                      _passwordController.text,
+                                      email: _emailController.text,
+                                      password: _passwordController.text,
+                                      name: _nameController.text,
                                     );
                                   }
                                 } on FirebaseAuthException catch (e) {

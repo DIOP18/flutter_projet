@@ -18,6 +18,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
   late TabController _tabController;
   String searchQuery = "";
 
+
   @override
   void initState() {
     super.initState();
@@ -103,18 +104,40 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => AjoutProjetScreen()),
-          );
+      floatingActionButton: FutureBuilder<bool>(
+        future: _isCurrentUserAdmin(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox.shrink(); // Cache pendant le chargement
+          }
+
+          return snapshot.data == true
+              ? FloatingActionButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AjoutProjetScreen()),
+              );
+            },
+            backgroundColor: Color(0xFF2C3E50),
+            child: Icon(Icons.add, color: Colors.white),
+          )
+              : SizedBox.shrink(); // Cache si non-admin
         },
-        backgroundColor: Color(0xFF2C3E50),
-        child: Icon(Icons.add, color: Colors.white),
       ),
     );
   }
+}
+Future<bool> _isCurrentUserAdmin() async {
+  final user = FirebaseAuth.instance.currentUser;
+  if (user == null) return false;
+
+  final doc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .get();
+
+  return doc.data()?['role'] == 'Admin';
 }
 
 // Fonction pour formater la date
@@ -196,10 +219,13 @@ class ProjectList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final currentUserId = Auth().currentUser?.uid;
+    if (currentUserId == null) return Center(child: Text("Veuillez vous connecter"));
     return StreamBuilder<QuerySnapshot>(
       stream: FirebaseFirestore.instance
           .collection('projects')
           .where('status', isEqualTo: status)
+          .where('members', arrayContains: currentUserId) // Ajoutez cette ligne
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
