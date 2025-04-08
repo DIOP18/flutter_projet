@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 
 import 'FichiersTab.dart';
 import 'MembersTab.dart';
+import 'TachesTab.dart';
 
 
 class ProjectDetailsScreen extends StatefulWidget {
@@ -229,7 +230,7 @@ class _ProjectDetailsScreenState extends State<ProjectDetailsScreen>
               ),
 
               // Placeholders pour les autres onglets
-              Center(child: Text("Tâches - À implémenter")),
+              ProjectTasksScreen(projectId: widget.projectId),
               ProjectMembersScreen(projectId: widget.projectId),
               ProjectFilesTab(projectId: widget.projectId)
             ],

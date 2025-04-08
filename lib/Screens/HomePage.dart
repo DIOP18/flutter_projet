@@ -41,12 +41,7 @@ class _MyHomePageState extends State<MyHomePage> with SingleTickerProviderStateM
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
-          onPressed: () {
-            // Action pour le menu
-          },
-        ),
+
         actions: [
           IconButton(
             icon: Icon(Icons.exit_to_app, color: Colors.white),
